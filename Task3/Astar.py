@@ -19,6 +19,10 @@ class BoardMap:
 
         self.board = return_map
 
+    def print_board(self):
+        for line in self.board:
+            print(line)
+
     # Map options
     options = {
         '11': "board-1-1.txt",
@@ -63,4 +67,4 @@ class AStar:
 
         return came_from, cost_so_far
 
-print(BoardMap().board)
+BoardMap().print_board()
