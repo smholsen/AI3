@@ -38,6 +38,7 @@ class BoardMap:
 
 
 class AStar:
+    # Doc. http://www.redblobgames.com/pathfinding/a-star/implementation.html#orgheadline8
     def heuristic(a, b):
         (x1, y1) = a
         (x2, y2) = b
@@ -68,3 +69,5 @@ class AStar:
         return came_from, cost_so_far
 
 BoardMap().print_board()
+
+
