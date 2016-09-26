@@ -21,10 +21,11 @@ class MapReader:
         # Read map file
         f = open('../Maps/' + boardFile, 'r')
         for line in f:
-            print(line)
-
+            tmp = []
+            for symbol in line:
+                tmp.append(symbol)
+            map.append(tmp)
 
         return map
 
 
-MapReader.read()
