@@ -14,18 +14,21 @@ class MapReader:
 
     @staticmethod
     def read():
-        map = []
+        return_map = []
         # Select map
         board = input("Enter board level (11, 12, 13, 14, 21, 22, 23 or 24)")
-        boardFile = MapReader.options[board]
+        board_file = MapReader.options[board]
         # Read map file
-        f = open('../Maps/' + boardFile, 'r')
+        f = open('../Maps/' + board_file, 'r')
         for line in f:
             tmp = []
             for symbol in line:
-                tmp.append(symbol)
-            map.append(tmp)
+                # lol
+                if symbol != '\n':
+                    tmp.append(symbol)
+            return_map.append(tmp)
 
-        return map
+        return return_map
+
 
 
