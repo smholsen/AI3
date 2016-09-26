@@ -19,6 +19,7 @@ class BoardMap:
 
         self.board = return_map
 
+    # prints out the board line for line
     def print_board(self):
         for line in self.board:
             print(line)
