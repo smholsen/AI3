@@ -28,7 +28,6 @@ class Map:
     # Constructor
     def __init__(self):
 
-
         # Target to move to
         self.goal = None
 
@@ -60,10 +59,7 @@ class Map:
                     # Create a node with coordinates x, y
                     newNode = Node(self, 'normal', y, x)
 
-
-
-
-    # prints out the board line for line
+    # Prints out the board line for line
     def print_board(self):
         for line in self.map:
             print(line)
