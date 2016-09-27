@@ -1,3 +1,5 @@
+
+
 class BoardMap:
     board = []
 
@@ -37,38 +39,77 @@ class BoardMap:
     }
 
 
+class Node:
+    # Constructor
 
-class AStar:
-    # Doc. http://www.redblobgames.com/pathfinding/a-star/implementation.html#orgheadline8
-    def heuristic(a, b):
-        (x1, y1) = a
-        (x2, y2) = b
-        return abs(x1 - x2) + abs(y1 - y2)
+    def __init__(self, map, y, x, type):
 
-    def a_star_search(graph, start, goal):
-        frontier = PriorityQueue()
-        frontier.put(start, 0)
-        came_from = {}
-        cost_so_far = {}
-        came_from[start] = None
-        cost_so_far[start] = 0
+        # Co-Ords
+        self.x = x
+        self.y = y
 
-        while not frontier.empty():
-            current = frontier.get()
+        # Need to tie the nodes to the current map object
+        # self.map = map
 
-            if current == goal:
-                break
+        # Type of Node // Wall, Normal etc
+        self.type = type
 
-            for next in graph.neighbors(current):
-                new_cost = cost_so_far[current] + graph.cost(current, next)
-                if next not in cost_so_far or new_cost < cost_so_far[next]:
-                    cost_so_far[next] = new_cost
-                    priority = new_cost + heuristic(goal, next)
-                    frontier.put(next, priority)
-                    came_from[next] = current
+        # Previous Node
+        self.previous_node = None
 
-        return came_from, cost_so_far
+        # Score?
+
+
+class Map:
+    # Constructor
+    def __init__(self):
+
+        # 2d Array of board read from .txt file
+        self.map = []
+
+        # Target to move to
+        self.goal = None
+
+        # Size of map
+        self.max_x = None
+        self.max_y = None
+
+
+
+class Astar:
+
+    openList = []
+    closedList = []
+    '''
+    http://web.mit.edu/eranki/www/tutorials/search/
+    // A *
+    initialize the open list
+    initialize the closed list
+    put the starting node on the open list (you can leave its f at zero)
+
+    while the open list is not empty
+        find the node with the least f on the open list, call it "q"
+        pop q off the open list
+        generate q's 8 successors and set their parents to q
+        for each successor
+            if successor is the goal, stop the search
+            successor.g = q.g + distance between successor and q
+            successor.h = distance from goal to successor
+            successor.f = successor.g + successor.h
+
+            if a node with the same position as successor is in the OPEN list \
+                which has a lower f than successor, skip this successor
+            if a node with the same position as successor is in the CLOSED list \
+                which has a lower f than successor, skip this successor
+            otherwise, add the node to the open list
+        end
+        push q on the closed list
+    end
+    '''
+
 
 BoardMap().print_board()
+
+
 
 
