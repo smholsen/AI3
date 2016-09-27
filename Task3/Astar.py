@@ -26,9 +26,8 @@ class Map:
     map = []
 
     # Constructor
-    def __init__(self, map_to_compute):
+    def __init__(self):
 
-        self.map = map_to_compute
 
         # Target to move to
         self.goal = None
@@ -48,6 +47,21 @@ class Map:
         '23': "board-2-3.txt",
         '24': "board-2-4.txt"
     }
+
+    def create_map(self, rows):
+
+        # Y-axis
+        for y in range(len(rows)):
+            currentRow = []
+            # X-axis
+            for x in range(len(rows[y])):
+                # Skip newlines
+                if rows[y][x] != '\n':
+                    # Create a node with coordinates x, y
+                    newNode = Node(self, 'normal', y, x)
+
+
+
 
     # prints out the board line for line
     def print_board(self):
@@ -90,20 +104,23 @@ class Astar:
 
 # To run when start program
 class Main:
+
+    # Create Map Object
+    game_map = Map()
+
     # Select map
     level = input("Enter board level (11, 12, 13, 14, 21, 22, 23 or 24)")
     board_file = Map.options[level]
+    # Remove previous Map
+    game_map.map = []
 
-    mapToCompute = []
+    tmp_read_map = []
     # Read map file
     f = open('../Maps/' + board_file, 'r')
     for line in f:
-        tmp = []
-        for symbol in line:
-            # lol
-            if symbol != '\n':
-                tmp.append(symbol)
-        mapToCompute.append(tmp)
+        tmp_read_map.append(line)
+
+    game_map.create_map(tmp_read_map)
 
     # Create map object with mapToCompute
 
