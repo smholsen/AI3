@@ -9,13 +9,16 @@ class Node:
         self.y = y
 
         # Need to tie the nodes to the current map object
-        # self.map = map
+        self.map = map
 
         # Type of Node // Wall, Normal etc
         self.type = type
 
         # Previous Node
         self.previous_node = None
+
+        # Is this node the goal node?
+        self.goal = False
 
         # Score?
 
@@ -59,6 +62,12 @@ class Map:
                     # Create a node with coordinates x, y
                     newNode = Node(self, 'normal', y, x)
 
+                    # If node is goal node, set Node.goal = true
+                    if rows[y][x] == 'B':
+                        newNode.goal = True
+
+                    # If node is start node, add node to A| Open set
+                        
     # Prints out the board line for line
     def print_board(self):
         for line in self.map:
