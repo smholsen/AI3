@@ -1,44 +1,4 @@
 
-
-class BoardMap:
-    board = []
-
-    # constructor:
-    def __init__(self):
-        return_map = []
-        # Select map
-        level = input("Enter board level (11, 12, 13, 14, 21, 22, 23 or 24)")
-        board_file = BoardMap.options[level]
-        # Read map file
-        f = open('../Maps/' + board_file, 'r')
-        for line in f:
-            tmp = []
-            for symbol in line:
-                # lol
-                if symbol != '\n':
-                    tmp.append(symbol)
-            return_map.append(tmp)
-
-        self.board = return_map
-
-    # prints out the board line for line
-    def print_board(self):
-        for line in self.board:
-            print(line)
-
-    # Map options
-    options = {
-        '11': "board-1-1.txt",
-        '12': "board-1-2.txt",
-        '13': "board-1-3.txt",
-        '14': "board-1-4.txt",
-        '21': "board-2-1.txt",
-        '22': "board-2-2.txt",
-        '23': "board-2-3.txt",
-        '24': "board-2-4.txt"
-    }
-
-
 class Node:
     # Constructor
 
@@ -61,11 +21,14 @@ class Node:
 
 
 class Map:
-    # Constructor
-    def __init__(self):
 
-        # 2d Array of board read from .txt file
-        self.map = []
+    # 2d Array of board read from .txt file
+    map = []
+
+    # Constructor
+    def __init__(self, map_to_compute):
+
+        self.map = map_to_compute
 
         # Target to move to
         self.goal = None
@@ -73,6 +36,23 @@ class Map:
         # Size of map
         self.max_x = None
         self.max_y = None
+
+    # Map options
+    options = {
+        '11': "board-1-1.txt",
+        '12': "board-1-2.txt",
+        '13': "board-1-3.txt",
+        '14': "board-1-4.txt",
+        '21': "board-2-1.txt",
+        '22': "board-2-2.txt",
+        '23': "board-2-3.txt",
+        '24': "board-2-4.txt"
+    }
+
+    # prints out the board line for line
+    def print_board(self):
+        for line in self.map:
+            print(line)
 
 
 
@@ -108,7 +88,25 @@ class Astar:
     '''
 
 
-BoardMap().print_board()
+# To run when start program
+class Main:
+    # Select map
+    level = input("Enter board level (11, 12, 13, 14, 21, 22, 23 or 24)")
+    board_file = Map.options[level]
+
+    mapToCompute = []
+    # Read map file
+    f = open('../Maps/' + board_file, 'r')
+    for line in f:
+        tmp = []
+        for symbol in line:
+            # lol
+            if symbol != '\n':
+                tmp.append(symbol)
+        mapToCompute.append(tmp)
+
+    # Create map object with mapToCompute
+
 
 
 
