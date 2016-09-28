@@ -17,7 +17,7 @@ class Node:
         self.isWall = False
         self.isNormal = True
         self.isVisited = False
-        self.isClosed = False
+        self.isExplored = False
 
         self.backTracked = False
 
@@ -43,11 +43,8 @@ class Node:
         if self.backTracked:
             return '+'
 
-        elif self.isClosed:
-            return 'x'
-
         elif self.isVisited:
-            return 'o'
+            return 'x'
 
         elif self.isGoal:
             return 'B'
@@ -57,6 +54,10 @@ class Node:
 
         elif self.isWall:
             return '#'
+
+        elif self.isExplored:
+            return 'o'
+
         elif self.isNormal:
             return '.'
 
@@ -250,6 +251,7 @@ def main():
             neighbouring_nodes = game_map.get_neighbours(current_node)
 
             for nbr in neighbouring_nodes:
+                nbr.isExplored = True
                 if nbr not in game_map.algorithm.closedList:
                     # Check if visited node is goal node
                     if nbr.isGoal:
@@ -280,7 +282,6 @@ def main():
                         game_map.algorithm.openList.append(nbr)
 
             game_map.algorithm.closedList.append(current_node)
-            current_node.isClosed = True
 
             game_map.print_board()
 
