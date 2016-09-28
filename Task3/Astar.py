@@ -304,6 +304,7 @@ def main():
             game_map.print_board()
 
         game_map.backtrack_from_goal()
+        print('\n\n')
         game_map.print_board()
 
 
