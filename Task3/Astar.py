@@ -1,4 +1,5 @@
 # A* Using manhattan distance, not Euclidian. Because simpler :3
+import time
 
 
 class Node:
@@ -22,7 +23,7 @@ class Node:
         self.previous_node = None
 
         # Is this node the goal node?
-        self.goal = False
+        self.isGoal = False
 
         # Tentative cost
         self.g = 0
@@ -32,19 +33,19 @@ class Node:
 
     def __str__(self):
 
-        if self.isVisited is True:
+        if self.isVisited:
             return 'O'
 
-        elif self.goal is True:
+        elif self.isGoal:
             return 'B'
 
-        elif self.isStart is True:
+        elif self.isStart:
             return 'A'
 
-        elif self.isWall is True:
+        elif self.isWall:
             return '#'
 
-        elif self.isNormal is True:
+        elif self.isNormal:
             return '.'
 
 
@@ -96,7 +97,7 @@ class Map:
 
                     # If node is goal node, set Node.goal = true
                     if rows[y][x] == 'B':
-                        new_node.goal = True
+                        new_node.isGoal = True
                         self.goal = new_node
 
                     # If node is start node, add node to A* Open set
@@ -228,6 +229,8 @@ def main():
         current_node = None
         # While not completed: Run A* Algorithm and print board for every step.
         while True:
+            print()
+            time.sleep(0.5)  # delays for 5 seconds
             # If there are still nodes in the openList
             if len(game_map.algorithm.openList) != 0:
                 game_map.algorithm.sort_open_list()
@@ -236,6 +239,9 @@ def main():
             current_node = game_map.algorithm.openList[0]
             # Make node state visited.
             current_node.isVisited = True
+
+            # Check if visited node is goal node
+
 
             game_map.print_board()
             break
