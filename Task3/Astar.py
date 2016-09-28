@@ -194,6 +194,14 @@ class Astar:
     def sort_open_list(self):
         self.openList = sorted(self.openList, key=lambda o: float(o.f))
 
+    class BFS:
+        Qeue = []
+        closedList = []
+
+        # Sort the open list with regards to both current cost + heuristic
+        def sort_open_list(self):
+            self.openList = sorted(self.openList, key=lambda o: float(o.f))
+
 
 # To run when start program
 def main():
@@ -285,5 +293,13 @@ def main():
         print('\n\n')
         game_map.print_board()
 
+    elif algoType == '1':
+        # BFS
+
+        return
+
+    elif algoType == '2':
+        # Dijkstra
+        return
 
 main()
