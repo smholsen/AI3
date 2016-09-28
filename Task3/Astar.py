@@ -228,7 +228,6 @@ def main():
             # time.sleep(0.1)  # delays for 5 seconds
 
             # Pick the best node
-
             current_node = game_map.algorithm.openList[0]
             for node in game_map.algorithm.openList:
                 if node.f == current_node.f:
@@ -244,6 +243,20 @@ def main():
 
             # Check which neighbour is best choice.
             neighbouring_nodes = game_map.get_neighbours(current_node)
+
+            print('Current Node Coordinates:', current_node.x, current_node.y)
+            shitnode = game_map.mapArray[0][18]
+            print('Node to right of start! \n'
+                  'g: ', shitnode.g, '\n'
+                  'h: ', shitnode.h, '\n'
+                  'f: ', shitnode.f, '\n'
+                  'isVisited: ', shitnode.isVisited, '\n'
+                  )
+            if shitnode.previous_node is not None:
+                print('previous Co-ords: ', shitnode.previous_node.x, shitnode.previous_node.y)
+            else:
+                print('no parent')
+
 
             for nbr in neighbouring_nodes:
                 if nbr not in game_map.algorithm.closedList:
@@ -266,6 +279,7 @@ def main():
                             nbr.g = new_g
                             nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
+
                     else:
                         nbr.g = current_node.g + nbr.cost
                         nbr.h = game_map.manhattan_distance(nbr)
@@ -281,6 +295,9 @@ def main():
         game_map.backtrack_from_goal()
         print('\n\n')
         game_map.print_board()
+
+
+
 
 
 main()
