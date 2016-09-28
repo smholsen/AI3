@@ -244,19 +244,6 @@ def main():
             # Check which neighbour is best choice.
             neighbouring_nodes = game_map.get_neighbours(current_node)
 
-            print('Current Node Coordinates:', current_node.x, current_node.y)
-            shitnode = game_map.mapArray[0][18]
-            print('Node to right of start! \n'
-                  'g: ', shitnode.g, '\n'
-                  'h: ', shitnode.h, '\n'
-                  'f: ', shitnode.f, '\n'
-                  'isVisited: ', shitnode.isVisited, '\n'
-                  )
-            if shitnode.previous_node is not None:
-                print('previous Co-ords: ', shitnode.previous_node.x, shitnode.previous_node.y)
-            else:
-                print('no parent')
-
 
             for nbr in neighbouring_nodes:
                 if nbr not in game_map.algorithm.closedList:
@@ -287,7 +274,21 @@ def main():
                         nbr.f = nbr.g + nbr.h
                         game_map.algorithm.openList.append(nbr)
 
-            print(current_node.g)
+            print('Current Node Coordinates:', current_node.x, current_node.y)
+            shitnode = game_map.mapArray[0][18]
+            print('Node to right of start! \n'
+                  'g: ', shitnode.g, '\n'
+                  'h: ', shitnode.h, '\n'
+                  'f: ', shitnode.f, '\n'
+                  'isVisited: ', shitnode.isVisited, '\n'
+                  )
+            if shitnode.previous_node is not None:
+                print('previous Co-ords: ', shitnode.previous_node.x, shitnode.previous_node.y)
+            else:
+                print('no parent')
+
+
+            print('Current node G: ', current_node.g)
             game_map.algorithm.closedList.append(current_node)
 
             game_map.print_board()
