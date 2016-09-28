@@ -40,17 +40,17 @@ class Node:
 
     def __str__(self):
 
-        if self.backTracked:
-            return '+'
-
-        elif self.isVisited:
-            return 'x'
-
-        elif self.isGoal:
+        if self.isGoal:
             return 'B'
 
         elif self.isStart:
             return 'A'
+
+        elif self.backTracked:
+            return '+'
+
+        elif self.isVisited:
+            return 'x'
 
         elif self.isWall:
             return '#'
