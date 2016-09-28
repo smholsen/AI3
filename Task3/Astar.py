@@ -99,10 +99,12 @@ class Map:
         '24': "board-2-4.txt"
     }
 
-    def start_map(self, rows):
-
-        self.algorithm = Astar()
-        # Reset map
+    def start_map(self, rows, algo_type):
+        # Algo type: 0 = A*, 1= BFS, 2=Dijkstra
+        if algo_type == '0':
+            self.algorithm = Astar()
+        elif algo_type == '1':
+            self.algorithm = BFS()
 
         # Y-axis
         for y in range(len(rows)):
@@ -125,12 +127,16 @@ class Map:
                     # If node is start node, add node to A* Open set
                     if rows[y][x] == 'A':
                         new_node.isStart = True
-                        self.algorithm.openList.append(new_node)
+                        if algo_type == '0':
+                            self.algorithm.openList.append(new_node)
+                        elif algo_type == '1':
+                            self.algorithm.Qeue.append(new_node)
 
                     elif rows[y][x] == '#':
                         new_node.isWall = True
                         # Walls are not possible to go to, so they are directly added to the A* closed set.
-                        self.algorithm.closedList.append(new_node)
+                        if algo_type == '0':
+                            self.algorithm.closedList.append(new_node)
 
                     # Add node to row in map
                     current_row.append(new_node)
@@ -192,6 +198,7 @@ class Astar:
     def sort_open_list(self):
         self.openList = sorted(self.openList, key=lambda o: float(o.f))
 
+
 class BFS:
     Qeue = []
 
@@ -213,7 +220,7 @@ def main():
     for line in f:
         tmp_read_map.append(line)
 
-    game_map.start_map(tmp_read_map)
+    game_map.start_map(tmp_read_map, algoType)
     game_map.print_board()
 
     # If algorithm is set to A*
@@ -247,7 +254,6 @@ def main():
             # Check which neighbour is best choice.
             neighbouring_nodes = game_map.get_neighbours(current_node)
 
-
             for nbr in neighbouring_nodes:
                 if nbr not in game_map.algorithm.closedList:
                     # Check if visited node is goal node
@@ -260,7 +266,6 @@ def main():
                     # If it is a wall then fuck it
                     if nbr.isWall:
                         continue
-
 
                     if nbr in game_map.algorithm.openList:
                         new_g = current_node.g + nbr.cost
@@ -278,7 +283,6 @@ def main():
                             nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
                         game_map.algorithm.openList.append(nbr)
-
 
             game_map.algorithm.closedList.append(current_node)
 
