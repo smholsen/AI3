@@ -57,8 +57,6 @@ class Node:
             return '.'
 
 
-
-
 class Map:
 
     # 2d Array of board read from .txt file
@@ -136,11 +134,6 @@ class Map:
         if self.max_y is None:
             self.max_y = len(rows) - 1
 
-        # If map was valid, we should now have 1 goal node and 1 start node.
-        # Now we must set the tentative cost for start node. (g+h)
-        if len(self.algorithm.openList) > 0:
-            self.algorithm.openList[0].f = self.manhattan_distance(self.algorithm.openList[0])
-
     # Calculates the manhattan distance, adding difference in x and y between current node and goal node
     def manhattan_distance(self, from_node):
         return abs((self.goal.x - from_node.x) + abs(self.goal.y - from_node.y))
@@ -178,8 +171,6 @@ class Map:
             tmp.backTracked = True
 
 
-
-
 class Astar:
 
     openList = []
@@ -187,36 +178,7 @@ class Astar:
 
     # Sort the open list with regards to both current cost + heuristic
     def sort_open_list(self):
-        self.openList = sorted(self.openList, key=lambda f: f.g + f.h)
-
-    #
-
-    '''
-    http://web.mit.edu/eranki/www/tutorials/search/
-    // A *
-    initialize the open list
-    initialize the closed list
-    put the starting node on the open list (you can leave its f at zero)
-
-    while the open list is not empty
-        find the node with the least f on the open list, call it "q"
-        pop q off the open list
-        generate q's 8 successors and set their parents to q
-        for each successor
-            if successor is the goal, stop the search
-            successor.g = q.g + distance between successor and q
-            successor.h = distance from goal to successor
-            successor.f = successor.g + successor.h
-
-            if a node with the same position as successor is in the OPEN list \
-                which has a lower f than successor, skip this successor
-            if a node with the same position as successor is in the CLOSED list \
-                which has a lower f than successor, skip this successor
-            otherwise, add the node to the open list
-        end
-        push q on the closed list
-    end
-    '''
+        self.openList = sorted(self.openList, key=lambda o: float(o.f))
 
 
 # To run when start program
@@ -259,11 +221,8 @@ def main():
             # Make node state visited.
             current_node.isVisited = True
 
-
-
             # Check which neighbour is best choice.
             neighbouring_nodes = game_map.get_neighbours(current_node)
-
 
             for nbr in neighbouring_nodes:
                 if nbr not in game_map.algorithm.closedList:
@@ -281,7 +240,7 @@ def main():
                         nbr.previous_node = current_node
 
                     if nbr in game_map.algorithm.openList:
-                        new_g = nbr.g + 1
+                        new_g = current_node.g + 1
                         if new_g < nbr.g:
                             nbr.g = new_g
                             nbr.previous_node = current_node
@@ -292,12 +251,6 @@ def main():
                         nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
                         game_map.algorithm.openList.append(nbr)
-
-                    '''
-                    nbr.g = current_node.g + 1
-                    nbr.h = game_map.manhattan_distance(nbr)
-                    nbr.f = nbr.g + nbr.h
-                    '''
 
             game_map.algorithm.closedList.append(current_node)
 
