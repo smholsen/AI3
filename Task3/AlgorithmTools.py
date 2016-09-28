@@ -196,6 +196,8 @@ class AlgorithmTools:
     def sort_open_list(self):
         self.openList = sorted(self.openList, key=lambda o: float(o.f))
 
+    def sort_open_list_dijkstra(self):
+        self.openList = sorted(self.openList, key=lambda o: float(o.g))
 
 # To run when start program
 def main():
@@ -222,9 +224,18 @@ def main():
     while len(game_map.algorithm.openList) != 0 and stop is not True:
 
         print()
-        # If there are still nodes in the openLis IF A*
+        # Different sorting depending on Algorithm
         if algoType == '0':
+            # If algorithm is A* then sort with (g+h = f)
             game_map.algorithm.sort_open_list()
+        elif algoType == '1':
+            # If algorithm is BFS, then dont sort. Just Normal Qeue, first in first out (Pop(0))
+            continue
+        elif algoType == '2':
+            # If algorithm is Dijkstra, only sort with respects to G, not H
+            game_map.algorithm.sort_open_list_dijkstra()
+
+
         for a in game_map.algorithm.openList:
             print(str(a.f) + '||', end="")
         print()
@@ -272,6 +283,7 @@ def main():
                     nbr.f = nbr.g + nbr.h
                 else:
                     nbr.g = current_node.g + nbr.cost
+
                     nbr.h = game_map.manhattan_distance(nbr)
                     if not nbr.isStart:
                         nbr.previous_node = current_node
