@@ -257,20 +257,22 @@ def main():
                     # If it is a wall then fuck it
                     if nbr.isWall:
                         continue
-                    if not nbr.isStart:
-                        nbr.previous_node = current_node
+
 
                     if nbr in game_map.algorithm.openList:
                         new_g = current_node.g + nbr.cost
+                        print('NEW G:', new_g)
                         if new_g < nbr.g:
                             nbr.g = new_g
-                            nbr.previous_node = current_node
+                            if not nbr.isStart:
+                                nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
 
                     else:
                         nbr.g = current_node.g + nbr.cost
                         nbr.h = game_map.manhattan_distance(nbr)
-                        nbr.previous_node = current_node
+                        if not nbr.isStart:
+                            nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
                         game_map.algorithm.openList.append(nbr)
 
