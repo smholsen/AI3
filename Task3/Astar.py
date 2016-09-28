@@ -4,7 +4,7 @@
 class Node:
     # Constructor
 
-    def __init__(self, m_map, y, x, m_type):
+    def __init__(self, m_map, y, x):
 
         # Co-Ordinates
         self.x = x
@@ -13,8 +13,8 @@ class Node:
         # Need to tie the nodes to the current map object
         self.mMap = m_map
 
-        # Type of Node // Wall, Normal etc
-        self.mType = m_type
+        # Type of Node // Wall, Normal etc Stored as string 'normal', 'wall'
+        self.mType = 'normal'
 
         # Previous Node
         self.previous_node = None
@@ -27,6 +27,16 @@ class Node:
 
         # Heuristic cost
         f = 0
+
+    def __str__(self):
+        if self.mType == 'normal':
+            return "."
+        if self.mType == 'start':
+            return 'A'
+        if self.mType == 'goal':
+            return 'B'
+        if self.mType == 'wall':
+            return '#'
 
 
 class Map:
@@ -70,26 +80,33 @@ class Map:
                 # Skip newlines
                 if rows[y][x] != '\n':
                     # Create a node with coordinates x, y
-                    new_node = Node(self, y, x, 'normal')
+                    new_node = Node(self, y, x)
 
                     # If node is goal node, set Node.goal = true
                     if rows[y][x] == 'B':
+                        new_node.mType = 'goal'
                         new_node.goal = True
                         self.goal = new_node
 
                     # If node is start node, add node to A* Open set
                     if rows[y][x] == 'A':
+                        new_node.mType = 'start'
                         algorithm.openList.append(new_node)
 
                     elif rows[y][x] == '#':
+                        new_node.mType = 'wall'
                         # Walls are not possible to go to, so they are directly added to the A* closed set.
                         algorithm.closedList.append(new_node)
+
+                    # If node is not start, end or wall then type = 'normal'
+                    else:
+                        new_node.mType = 'normal'
 
                     # Add node to row in map
                     current_row.append(new_node)
 
             # Add row to complete map.
-                self.mapArray.append(current_row)
+            self.mapArray.append(current_row)
 
             # We need to set max width of map, but only once. I wasn't able to think of any better way to do it :p
             if self.max_x is None:
@@ -129,7 +146,10 @@ class Map:
     # Prints out the board line for line
     def print_board(self):
         for line in self.mapArray:
-            print(line)
+            for node in line:
+                print(node, end="")
+            print('\n')
+
 
 
 class Astar:
@@ -165,7 +185,7 @@ class Astar:
 
 
 # To run when start program
-class Main:
+def main():
 
     # Create Map Object
     game_map = Map()
@@ -181,10 +201,11 @@ class Main:
         tmp_read_map.append(line)
 
     game_map.start_map(tmp_read_map)
+    game_map.print_board()
 
     # Create map object with mapToCompute
 
-
+main()
 
 
 
