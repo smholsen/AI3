@@ -103,11 +103,9 @@ class Map:
     }
 
     def start_map(self, rows, algo_type):
-        # Algo type: 0 = A*, 1= BFS, 2=Dijkstra
-        if algo_type == '0':
-            self.algorithm = Astar()
-        elif algo_type == '1':
-            self.algorithm = BFS()
+
+        self.algorithm = AlgorithmTools()
+
 
         # Y-axis
         for y in range(len(rows)):
@@ -130,16 +128,13 @@ class Map:
                     # If node is start node, add node to A* Open set
                     if rows[y][x] == 'A':
                         new_node.isStart = True
-                        if algo_type == '0':
-                            self.algorithm.openList.append(new_node)
-                        elif algo_type == '1':
-                            self.algorithm.Qeue.append(new_node)
+                        self.algorithm.openList.append(new_node)
 
                     elif rows[y][x] == '#':
                         new_node.isWall = True
                         # Walls are not possible to go to, so they are directly added to the A* closed set.
-                        if algo_type == '0':
-                            self.algorithm.closedList.append(new_node)
+
+                        self.algorithm.closedList.append(new_node)
 
                     # Add node to row in map
                     current_row.append(new_node)
@@ -192,7 +187,7 @@ class Map:
             tmp.backTracked = True
 
 
-class Astar:
+class AlgorithmTools:
 
     openList = []
     closedList = []
@@ -200,10 +195,6 @@ class Astar:
     # Sort the open list with regards to both current cost + heuristic
     def sort_open_list(self):
         self.openList = sorted(self.openList, key=lambda o: float(o.f))
-
-
-class BFS:
-    Qeue = []
 
 
 # To run when start program
@@ -226,83 +217,74 @@ def main():
     game_map.start_map(tmp_read_map, algoType)
     game_map.print_board()
 
-    # If algorithm is set to A*
-    if algoType == '0':
-        # While not completed: Run A* Algorithm and print board for every step.
-        stop = False
-        while len(game_map.algorithm.openList) != 0 and stop is not True:
+    # While not completed: Run A* Algorithm and print board for every step.
+    stop = False
+    while len(game_map.algorithm.openList) != 0 and stop is not True:
 
-            print()
-            # If there are still nodes in the openList
+        print()
+        # If there are still nodes in the openLis IF A*
+        if algoType == '0':
             game_map.algorithm.sort_open_list()
-            for a in game_map.algorithm.openList:
-                print(str(a.f) + '||', end="")
-            print()
-            # time.sleep(0.1)  # delays for 5 seconds
+        for a in game_map.algorithm.openList:
+            print(str(a.f) + '||', end="")
+        print()
+        # time.sleep(0.1)  # delays for 5 seconds
 
-            # Pick the best node
-            current_node = game_map.algorithm.openList[0]
-            for node in game_map.algorithm.openList:
-                if node.f == current_node.f:
-                    if node.h < current_node.h:
-                        current_node = node
-                else:
+        # Pick the best node
+        current_node = game_map.algorithm.openList[0]
+        for node in game_map.algorithm.openList:
+            if node.f == current_node.f:
+                if node.h < current_node.h:
+                    current_node = node
+            else:
+                break
+
+        game_map.algorithm.openList.pop(game_map.algorithm.openList.index(current_node))
+
+        # Make node state visited.
+        current_node.isVisited = True
+
+        # Check which neighbour is best choice.
+        neighbouring_nodes = game_map.get_neighbours(current_node)
+
+        for nbr in neighbouring_nodes:
+            nbr.isExplored = True
+            if nbr not in game_map.algorithm.closedList:
+                # Check if visited node is goal node
+                if nbr.isGoal:
+                    nbr.previous_node = current_node
+                    stop = True
+                    # Stop loop
                     break
 
-            game_map.algorithm.openList.pop(game_map.algorithm.openList.index(current_node))
+                # If it is a wall then skip it
+                if nbr.isWall:
+                    continue
 
-            # Make node state visited.
-            current_node.isVisited = True
-
-            # Check which neighbour is best choice.
-            neighbouring_nodes = game_map.get_neighbours(current_node)
-
-            for nbr in neighbouring_nodes:
-                nbr.isExplored = True
-                if nbr not in game_map.algorithm.closedList:
-                    # Check if visited node is goal node
-                    if nbr.isGoal:
-                        nbr.previous_node = current_node
-                        stop = True
-                        # Stop loop
-                        break
-
-                    # If it is a wall then skip it
-                    if nbr.isWall:
-                        continue
-
-                    # if neighbour already exists in openlist
-                    if nbr in game_map.algorithm.openList:
-                        new_g = current_node.g + nbr.cost
-                        print('NEW G:', new_g)
-                        if new_g < nbr.g:
-                            nbr.g = new_g
-                            if not nbr.isStart:
-                                nbr.previous_node = current_node
-                        nbr.f = nbr.g + nbr.h
-                    else:
-                        nbr.g = current_node.g + nbr.cost
-                        nbr.h = game_map.manhattan_distance(nbr)
+                # if neighbour already exists in openlist
+                if nbr in game_map.algorithm.openList:
+                    new_g = current_node.g + nbr.cost
+                    print('NEW G:', new_g)
+                    if new_g < nbr.g:
+                        nbr.g = new_g
                         if not nbr.isStart:
                             nbr.previous_node = current_node
-                        nbr.f = nbr.g + nbr.h
-                        game_map.algorithm.openList.append(nbr)
+                    nbr.f = nbr.g + nbr.h
+                else:
+                    nbr.g = current_node.g + nbr.cost
+                    nbr.h = game_map.manhattan_distance(nbr)
+                    if not nbr.isStart:
+                        nbr.previous_node = current_node
+                    nbr.f = nbr.g + nbr.h
+                    game_map.algorithm.openList.append(nbr)
 
-            game_map.algorithm.closedList.append(current_node)
+        game_map.algorithm.closedList.append(current_node)
 
-            game_map.print_board()
-
-        game_map.backtrack_from_goal()
-        print('\n\n')
         game_map.print_board()
 
-    elif algoType == '1':
-        # BFS
+    game_map.backtrack_from_goal()
+    print('\n\n')
+    game_map.print_board()
 
-        return
-
-    elif algoType == '2':
-        # Dijkstra
-        return
 
 main()
