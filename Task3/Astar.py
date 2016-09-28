@@ -2,31 +2,32 @@
 class Node:
     # Constructor
 
-    def __init__(self, map, y, x, type):
+    if __name__ == '__main__':
+        def __init__(self, mMap, y, x, mType):
 
-        # Co-Ords
-        self.x = x
-        self.y = y
+            # Co-Ords
+            self.x = x
+            self.y = y
 
-        # Need to tie the nodes to the current map object
-        self.map = map
+            # Need to tie the nodes to the current map object
+            self.mMap = mMap
 
-        # Type of Node // Wall, Normal etc
-        self.type = type
+            # Type of Node // Wall, Normal etc
+            self.mType = mType
 
-        # Previous Node
-        self.previous_node = None
+            # Previous Node
+            self.previous_node = None
 
-        # Is this node the goal node?
-        self.goal = False
+            # Is this node the goal node?
+            self.goal = False
 
-        # Score?
+            # Score?
 
 
 class Map:
 
     # 2d Array of board read from .txt file
-    map = []
+    mapArray = []
 
     # Constructor
     def __init__(self):
@@ -52,27 +53,43 @@ class Map:
 
     def create_map(self, rows):
 
+        algorithm = Astar()
+
         # Y-axis
         for y in range(len(rows)):
-            currentRow = []
+            current_row = []
             # X-axis
             for x in range(len(rows[y])):
                 # Skip newlines
                 if rows[y][x] != '\n':
                     # Create a node with coordinates x, y
-                    newNode = Node(self, 'normal', y, x)
+                    new_node = Node(self, y, x, 'normal')
 
                     # If node is goal node, set Node.goal = true
                     if rows[y][x] == 'B':
-                        newNode.goal = True
+                        new_node.goal = True
+                        self.goal = new_node
 
                     # If node is start node, add node to A| Open set
-                        
+                    if rows[y][x] == 'A':
+                        algorithm.openList.append(new_node)
+
+            # We need to set max width of map, but only once. I wasn't able to think of any better way to do it :p
+            if self.max_x is None:
+                self.max_x = len(current_row) - 1
+
+        # Same with height
+        if self.max_y is None:
+            self.max_y = len(rows) - 1
+
+    # Calculates the manhattan distance, adding difference in x and y betweeen current node and goal node
+    def manhattan_distance(self, from_node):
+        return abs((self.goal.x - from_node.x) + abs(self.goal.y - from_node.y))
+
     # Prints out the board line for line
     def print_board(self):
-        for line in self.map:
+        for line in self.mapArray:
             print(line)
-
 
 
 class Astar:
