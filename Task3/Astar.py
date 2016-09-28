@@ -1,5 +1,6 @@
 # A* Using manhattan distance, not Euclidian. Because simpler :3
 
+
 class Node:
     # Constructor
 
@@ -144,8 +145,6 @@ class Main:
     # Select map
     level = input("Enter board level (11, 12, 13, 14, 21, 22, 23 or 24)")
     board_file = Map.options[level]
-    # Remove previous Map
-    game_map.map = []
 
     tmp_read_map = []
     # Read map file
