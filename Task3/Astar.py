@@ -29,13 +29,16 @@ class Node:
         f = 0
 
     def __str__(self):
-        if self.mType == 'normal':
-            return "."
-        if self.mType == 'start':
-            return 'A'
-        if self.mType == 'goal':
+        if self.goal is True:
             return 'B'
-        if self.mType == 'wall':
+
+        elif self.mType == 'start':
+            return 'A'
+
+        elif self.mType == 'normal':
+            return '.'
+
+        elif self.mType == 'wall':
             return '#'
 
 
@@ -84,7 +87,6 @@ class Map:
 
                     # If node is goal node, set Node.goal = true
                     if rows[y][x] == 'B':
-                        new_node.mType = 'goal'
                         new_node.goal = True
                         self.goal = new_node
 
@@ -148,7 +150,7 @@ class Map:
         for line in self.mapArray:
             for node in line:
                 print(node, end="")
-            print('\n')
+            print()
 
 
 
