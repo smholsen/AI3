@@ -176,15 +176,11 @@ class Map:
             print()
 
     def backtrack_from_goal(self):
-        total = 0
         tmp = self.goal
         tmp.backTracked = True
         while tmp.previous_node:
-            total += tmp.cost
             tmp = tmp.previous_node
             tmp.backTracked = True
-            print(tmp.x, tmp.y)
-        print(total)
 
 
 class Astar:
