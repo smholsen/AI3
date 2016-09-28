@@ -19,6 +19,8 @@ class Node:
         self.isNormal = True
         self.isVisited = False
 
+        self.backTracked = False
+
         # Previous Node
         self.previous_node = None
 
@@ -36,8 +38,11 @@ class Node:
 
     def __str__(self):
 
-        if self.isVisited:
-            return 'O'
+        if self.backTracked:
+            return '+'
+
+        elif self.isVisited:
+            return 'o'
 
         elif self.isGoal:
             return 'B'
@@ -50,6 +55,8 @@ class Node:
 
         elif self.isNormal:
             return '.'
+
+
 
 
 class Map:
@@ -163,6 +170,14 @@ class Map:
                 print(node, end="")
             print()
 
+    def backtrack_from_goal(self):
+        tmp = self.goal
+        tmp.backTracked = True
+        while tmp.previous_node is not None:
+            tmp = tmp.previous_node
+            tmp.backTracked = True
+
+
 
 
 class Astar:
@@ -228,22 +243,22 @@ def main():
     # If algorithm is set to A*
     if algoType == '0':
         # While not completed: Run A* Algorithm and print board for every step.
-        while len(game_map.algorithm.openList) != 0:
+        stop = False
+        while len(game_map.algorithm.openList) != 0 and stop is not True:
 
             print()
             # If there are still nodes in the openList
             game_map.algorithm.sort_open_list()
-            time.sleep(0.1)  # delays for 5 seconds
+            for a in game_map.algorithm.openList:
+                print(str(a.f) + '||', end="")
+            print()
+            # time.sleep(0.1)  # delays for 5 seconds
 
             # Pick the best node
             current_node = game_map.algorithm.openList.pop(0)
             # Make node state visited.
             current_node.isVisited = True
 
-            # Check if visited node is goal node
-            if current_node.isGoal:
-                # Stop loop
-                break
 
 
             # Check which neighbour is best choice.
@@ -251,21 +266,45 @@ def main():
 
 
             for nbr in neighbouring_nodes:
-                # If it is a wall then fuck it
-                if nbr.isWall:
-                    continue
-                nbr.previous_node = current_node
-                nbr.g = current_node.g + 1
-                nbr.h = game_map.manhattan_distance(nbr)
-                nbr.f = nbr.g + nbr.h
+                if nbr not in game_map.algorithm.closedList:
+                    # Check if visited node is goal node
+                    if nbr.isGoal:
+                        nbr.previous_node = current_node
+                        stop = True
+                        # Stop loop
+                        break
 
-                if nbr not in game_map.algorithm.openList and nbr not in game_map.algorithm.closedList:
-                    game_map.algorithm.openList.append(nbr)
-            print(current_node.f)
+                    # If it is a wall then fuck it
+                    if nbr.isWall:
+                        continue
+                    if not nbr.isStart:
+                        nbr.previous_node = current_node
+
+                    if nbr in game_map.algorithm.openList:
+                        new_g = nbr.g + 1
+                        if new_g < nbr.g:
+                            nbr.g = new_g
+                            nbr.previous_node = current_node
+                        nbr.f = nbr.g + nbr.h
+                    else:
+                        nbr.g = current_node.g + 1
+                        nbr.h = game_map.manhattan_distance(nbr)
+                        nbr.previous_node = current_node
+                        nbr.f = nbr.g + nbr.h
+                        game_map.algorithm.openList.append(nbr)
+
+                    '''
+                    nbr.g = current_node.g + 1
+                    nbr.h = game_map.manhattan_distance(nbr)
+                    nbr.f = nbr.g + nbr.h
+                    '''
+
             game_map.algorithm.closedList.append(current_node)
 
             game_map.print_board()
 
+        game_map.backtrack_from_goal()
+        game_map.print_board()
 
 
 main()
