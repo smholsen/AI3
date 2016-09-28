@@ -4,30 +4,29 @@
 class Node:
     # Constructor
 
-    if __name__ == '__main__':
-        def __init__(self, m_map, y, x, m_type):
+    def __init__(self, m_map, y, x, m_type):
 
-            # Co-Ordinates
-            self.x = x
-            self.y = y
+        # Co-Ordinates
+        self.x = x
+        self.y = y
 
-            # Need to tie the nodes to the current map object
-            self.mMap = m_map
+        # Need to tie the nodes to the current map object
+        self.mMap = m_map
 
-            # Type of Node // Wall, Normal etc
-            self.mType = m_type
+        # Type of Node // Wall, Normal etc
+        self.mType = m_type
 
-            # Previous Node
-            self.previous_node = None
+        # Previous Node
+        self.previous_node = None
 
-            # Is this node the goal node?
-            self.goal = False
+        # Is this node the goal node?
+        self.goal = False
 
-            # Tentative cost
-            g = 0
+        # Tentative cost
+        g = 0
 
-            # Heuristic cost
-            f = 0
+        # Heuristic cost
+        f = 0
 
 
 class Map:
@@ -60,6 +59,8 @@ class Map:
     def start_map(self, rows):
 
         algorithm = Astar()
+        # Reset map
+        mapArray = []
 
         # Y-axis
         for y in range(len(rows)):
@@ -78,8 +79,17 @@ class Map:
 
                     # If node is start node, add node to A* Open set
                     if rows[y][x] == 'A':
-
                         algorithm.openList.append(new_node)
+
+                    elif rows[y][x] == '#':
+                        # Walls are not possible to go to, so they are directly added to the A* closed set.
+                        algorithm.closedList.append(new_node)
+
+                    # Add node to row in map
+                    current_row.append(new_node)
+
+            # Add row to complete map.
+                self.mapArray.append(current_row)
 
             # We need to set max width of map, but only once. I wasn't able to think of any better way to do it :p
             if self.max_x is None:
@@ -97,6 +107,24 @@ class Map:
     # Calculates the manhattan distance, adding difference in x and y between current node and goal node
     def manhattan_distance(self, from_node):
         return abs((self.goal.x - from_node.x) + abs(self.goal.y - from_node.y))
+
+    # Get a list of neighbouring nodes of a given node
+    def get_neighbours(self, node):
+        # Init array for the parents
+        neighbours = []
+
+        # Check if node is located at edge of map, if not, add neighbour to list and return list.
+        if node.y > 0:  # Up
+            neighbours.append(self.mapArray[node.y - 1][node.x])
+        if node.y < self.max_y:  # Down
+            neighbours.append(self.mapArray[node.y + 1][node.x])
+        if node.x > 0:  # Left
+            neighbours.append(self.mapArray[node.y][node.x - 1])
+        if node.x < self.max_x:  # Right
+            neighbours.append(self.mapArray[node.y][node.x + 1])
+
+        # Returns neighbours of the node
+        return neighbours
 
     # Prints out the board line for line
     def print_board(self):
