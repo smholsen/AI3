@@ -172,15 +172,19 @@ class Map:
     def print_board(self):
         for line in self.mapArray:
             for node in line:
-                print(node.cost, end="")
+                print(node, end="")
             print()
 
     def backtrack_from_goal(self):
+        total = 0
         tmp = self.goal
         tmp.backTracked = True
-        while tmp.previous_node is not None:
+        while tmp.previous_node:
+            total += tmp.cost
             tmp = tmp.previous_node
             tmp.backTracked = True
+            print(tmp.x, tmp.y)
+        print(total)
 
 
 class Astar:
@@ -195,7 +199,6 @@ class Astar:
 
 # To run when start program
 def main():
-
     # Create Map Object
     game_map = Map()
 
@@ -215,7 +218,7 @@ def main():
     game_map.print_board()
 
     # If algorithm is set to A*
-    """if algoType == '0':
+    if algoType == '0':
         # While not completed: Run A* Algorithm and print board for every step.
         stop = False
         while len(game_map.algorithm.openList) != 0 and stop is not True:
@@ -262,13 +265,13 @@ def main():
                         nbr.previous_node = current_node
 
                     if nbr in game_map.algorithm.openList:
-                        new_g = current_node.g + 1
+                        new_g = current_node.g + nbr.cost
                         if new_g < nbr.g:
                             nbr.g = new_g
                             nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
                     else:
-                        nbr.g = current_node.g + 1
+                        nbr.g = current_node.g + nbr.cost
                         nbr.h = game_map.manhattan_distance(nbr)
                         nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
@@ -281,7 +284,7 @@ def main():
 
         game_map.backtrack_from_goal()
         print('\n\n')
-        game_map.print_board()"""
+        game_map.print_board()
 
 
 main()
