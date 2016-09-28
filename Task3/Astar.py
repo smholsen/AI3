@@ -1,19 +1,20 @@
+# A* Using manhattan distance, not Euclidian. Because simpler :3
 
 class Node:
     # Constructor
 
     if __name__ == '__main__':
-        def __init__(self, mMap, y, x, mType):
+        def __init__(self, m_map, y, x, m_type):
 
-            # Co-Ords
+            # Co-Ordinates
             self.x = x
             self.y = y
 
             # Need to tie the nodes to the current map object
-            self.mMap = mMap
+            self.mMap = m_map
 
             # Type of Node // Wall, Normal etc
-            self.mType = mType
+            self.mType = m_type
 
             # Previous Node
             self.previous_node = None
@@ -21,7 +22,11 @@ class Node:
             # Is this node the goal node?
             self.goal = False
 
-            # Score?
+            # Tentative cost
+            g = 0
+
+            # Heuristic cost
+            f = 0
 
 
 class Map:
@@ -51,7 +56,7 @@ class Map:
         '24': "board-2-4.txt"
     }
 
-    def create_map(self, rows):
+    def start_map(self, rows):
 
         algorithm = Astar()
 
@@ -70,8 +75,9 @@ class Map:
                         new_node.goal = True
                         self.goal = new_node
 
-                    # If node is start node, add node to A| Open set
+                    # If node is start node, add node to A* Open set
                     if rows[y][x] == 'A':
+
                         algorithm.openList.append(new_node)
 
             # We need to set max width of map, but only once. I wasn't able to think of any better way to do it :p
@@ -82,7 +88,12 @@ class Map:
         if self.max_y is None:
             self.max_y = len(rows) - 1
 
-    # Calculates the manhattan distance, adding difference in x and y betweeen current node and goal node
+        # If map was valid, we should now have 1 goal node and 1 start node.
+        # Now we must set the tentative cost for start node. (g+f)
+        if len(algorithm.openList) > 0:
+            algorithm.openList[0].f = self.manhattan_distance(algorithm.openList[0])
+
+    # Calculates the manhattan distance, adding difference in x and y between current node and goal node
     def manhattan_distance(self, from_node):
         return abs((self.goal.x - from_node.x) + abs(self.goal.y - from_node.y))
 
@@ -142,7 +153,7 @@ class Main:
     for line in f:
         tmp_read_map.append(line)
 
-    game_map.create_map(tmp_read_map)
+    game_map.start_map(tmp_read_map)
 
     # Create map object with mapToCompute
 
