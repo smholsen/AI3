@@ -194,11 +194,6 @@ class Astar:
 
     class BFS:
         Qeue = []
-        closedList = []
-
-        # Sort the open list with regards to both current cost + heuristic
-        def sort_open_list(self):
-            self.openList = sorted(self.openList, key=lambda o: float(o.f))
 
 
 # To run when start program
