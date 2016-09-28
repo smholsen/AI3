@@ -36,6 +36,8 @@ class Node:
         # Total (tent+heuristic)
         self.f = 0
 
+        self.cost = 1
+
     def __str__(self):
 
         if self.backTracked:
@@ -56,6 +58,17 @@ class Node:
         elif self.isNormal:
             return '.'
 
+    def assign_cost(self, character):
+        if character == "w":
+            self.cost = 100
+        elif character == "m":
+            self.cost = 50
+        elif character == "f":
+            self.cost = 10
+        elif character == "g":
+            self.cost = 5
+        else:
+            self.cost = 1
 
 class Map:
 
@@ -101,6 +114,9 @@ class Map:
                     # Create a node with coordinates x, y
                     new_node = Node(self, y, x)
 
+                    # Assign cost to the node
+                    new_node.assign_cost(rows[y][x])
+
                     # If node is goal node, set Node.goal = true
                     if rows[y][x] == 'B':
                         new_node.isGoal = True
@@ -115,7 +131,6 @@ class Map:
                         new_node.isWall = True
                         # Walls are not possible to go to, so they are directly added to the A* closed set.
                         self.algorithm.closedList.append(new_node)
-
 
                     # Add node to row in map
                     current_row.append(new_node)
@@ -157,7 +172,7 @@ class Map:
     def print_board(self):
         for line in self.mapArray:
             for node in line:
-                print(node, end="")
+                print(node.cost, end="")
             print()
 
     def backtrack_from_goal(self):
@@ -200,7 +215,7 @@ def main():
     game_map.print_board()
 
     # If algorithm is set to A*
-    if algoType == '0':
+    """if algoType == '0':
         # While not completed: Run A* Algorithm and print board for every step.
         stop = False
         while len(game_map.algorithm.openList) != 0 and stop is not True:
@@ -266,7 +281,7 @@ def main():
 
         game_map.backtrack_from_goal()
         print('\n\n')
-        game_map.print_board()
+        game_map.print_board()"""
 
 
 main()
