@@ -116,6 +116,7 @@ class Map:
                         # Walls are not possible to go to, so they are directly added to the A* closed set.
                         self.algorithm.closedList.append(new_node)
 
+
                     # Add node to row in map
                     current_row.append(new_node)
 
@@ -214,7 +215,15 @@ def main():
 
             # Pick the best node
 
-            current_node = game_map.algorithm.openList.pop(0)
+            current_node = game_map.algorithm.openList[0]
+            for node in game_map.algorithm.openList:
+                if node.f == current_node.f:
+                    if node.h < current_node.h:
+                        current_node = node
+                else:
+                    break
+
+            game_map.algorithm.openList.pop(game_map.algorithm.openList.index(current_node))
 
             # Make node state visited.
             current_node.isVisited = True
