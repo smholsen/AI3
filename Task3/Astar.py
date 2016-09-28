@@ -13,8 +13,9 @@ class Node:
         # Need to tie the nodes to the current map object
         self.mMap = m_map
 
-        # Type of Node // Wall, Normal etc Stored as string 'normal', 'wall'
-        self.mType = 'normal'
+        self.isStart = False
+        self.isWall = False
+        self.isNormal = True
 
         # Previous Node
         self.previous_node = None
@@ -32,20 +33,22 @@ class Node:
         if self.goal is True:
             return 'B'
 
-        elif self.mType == 'start':
+        elif self.isStart is True:
             return 'A'
 
-        elif self.mType == 'normal':
+        elif self.isWall is True:
+            return '#'
+
+        elif self.isNormal is True:
             return '.'
 
-        elif self.mType == 'wall':
-            return '#'
 
 
 class Map:
 
     # 2d Array of board read from .txt file
     mapArray = []
+    algorithm = None
 
     # Constructor
     def __init__(self):
@@ -92,11 +95,11 @@ class Map:
 
                     # If node is start node, add node to A* Open set
                     if rows[y][x] == 'A':
-                        new_node.mType = 'start'
+                        new_node.isStart = True
                         algorithm.openList.append(new_node)
 
                     elif rows[y][x] == '#':
-                        new_node.mType = 'wall'
+                        new_node.isWall = True
                         # Walls are not possible to go to, so they are directly added to the A* closed set.
                         algorithm.closedList.append(new_node)
 
@@ -158,6 +161,13 @@ class Astar:
 
     openList = []
     closedList = []
+
+    # Sort the open list with regards to both current cost + heuristic
+    def sort_open_list(self):
+        self.openList = sorted(self.openList, key=lambda total: total.g + total.h)
+
+    #
+
     '''
     http://web.mit.edu/eranki/www/tutorials/search/
     // A *
@@ -196,6 +206,8 @@ def main():
     level = input("Enter board level (11, 12, 13, 14, 21, 22, 23 or 24)")
     board_file = Map.options[level]
 
+    algoType = input("What Algorithm to use? 0 = A*, 1 = BFS, 2 = Dijkstra")
+
     tmp_read_map = []
     # Read map file
     f = open('../Maps/' + board_file, 'r')
@@ -204,8 +216,21 @@ def main():
 
     game_map.start_map(tmp_read_map)
     game_map.print_board()
+'''
+    # If algorithm is set to A*
+    if algoType == '0':
+        current_node = None
+        # While not completed: Run A* Algorithm and print board for every step.
+        while True:
+            # If there are still nodes in the openList
+            if len(game_map.algorithm.openList) != 0:
+                game_map.algorithm.sort_open_list()
 
-    # Create map object with mapToCompute
+            # Pick the best node
+            current_node = game_map.algorithm.openList[0]
+            # Make node state visited.
+            '''
+
 
 main()
 
