@@ -31,6 +31,9 @@ class Node:
         # Heuristic cost
         self.h = 0
 
+        # Total (tent+heuristic)
+        self.f = 0
+
     def __str__(self):
 
         if self.isVisited:
@@ -47,8 +50,6 @@ class Node:
 
         elif self.isNormal:
             return '.'
-
-
 
 
 class Map:
@@ -129,7 +130,7 @@ class Map:
             self.max_y = len(rows) - 1
 
         # If map was valid, we should now have 1 goal node and 1 start node.
-        # Now we must set the tentative cost for start node. (g+f)
+        # Now we must set the tentative cost for start node. (g+h)
         if len(self.algorithm.openList) > 0:
             self.algorithm.openList[0].f = self.manhattan_distance(self.algorithm.openList[0])
 
@@ -171,7 +172,7 @@ class Astar:
 
     # Sort the open list with regards to both current cost + heuristic
     def sort_open_list(self):
-        self.openList = sorted(self.openList, key=lambda total: total.g + total.h)
+        self.openList = sorted(self.openList, key=lambda f: f.g + f.h)
 
     #
 
@@ -226,25 +227,44 @@ def main():
 
     # If algorithm is set to A*
     if algoType == '0':
-        current_node = None
         # While not completed: Run A* Algorithm and print board for every step.
-        while True:
+        while len(game_map.algorithm.openList) != 0:
+
             print()
-            time.sleep(0.5)  # delays for 5 seconds
             # If there are still nodes in the openList
-            if len(game_map.algorithm.openList) != 0:
-                game_map.algorithm.sort_open_list()
+            game_map.algorithm.sort_open_list()
+            time.sleep(0.1)  # delays for 5 seconds
 
             # Pick the best node
-            current_node = game_map.algorithm.openList[0]
+            current_node = game_map.algorithm.openList.pop(0)
             # Make node state visited.
             current_node.isVisited = True
 
             # Check if visited node is goal node
+            if current_node.isGoal:
+                # Stop loop
+                break
 
+
+            # Check which neighbour is best choice.
+            neighbouring_nodes = game_map.get_neighbours(current_node)
+
+
+            for nbr in neighbouring_nodes:
+                # If it is a wall then fuck it
+                if nbr.isWall:
+                    continue
+                nbr.previous_node = current_node
+                nbr.g = current_node.g + 1
+                nbr.h = game_map.manhattan_distance(nbr)
+                nbr.f = nbr.g + nbr.h
+
+                if nbr not in game_map.algorithm.openList and nbr not in game_map.algorithm.closedList:
+                    game_map.algorithm.openList.append(nbr)
+            print(current_node.f)
+            game_map.algorithm.closedList.append(current_node)
 
             game_map.print_board()
-            break
 
 
 
