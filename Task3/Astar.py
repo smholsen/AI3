@@ -16,6 +16,7 @@ class Node:
         self.isStart = False
         self.isWall = False
         self.isNormal = True
+        self.isVisited = False
 
         # Previous Node
         self.previous_node = None
@@ -24,13 +25,17 @@ class Node:
         self.goal = False
 
         # Tentative cost
-        g = 0
+        self.g = 0
 
         # Heuristic cost
-        f = 0
+        self.h = 0
 
     def __str__(self):
-        if self.goal is True:
+
+        if self.isVisited is True:
+            return 'O'
+
+        elif self.goal is True:
             return 'B'
 
         elif self.isStart is True:
@@ -41,6 +46,7 @@ class Node:
 
         elif self.isNormal is True:
             return '.'
+
 
 
 
@@ -74,7 +80,7 @@ class Map:
 
     def start_map(self, rows):
 
-        algorithm = Astar()
+        self.algorithm = Astar()
         # Reset map
         mapArray = []
 
@@ -96,12 +102,12 @@ class Map:
                     # If node is start node, add node to A* Open set
                     if rows[y][x] == 'A':
                         new_node.isStart = True
-                        algorithm.openList.append(new_node)
+                        self.algorithm.openList.append(new_node)
 
                     elif rows[y][x] == '#':
                         new_node.isWall = True
                         # Walls are not possible to go to, so they are directly added to the A* closed set.
-                        algorithm.closedList.append(new_node)
+                        self.algorithm.closedList.append(new_node)
 
                     # If node is not start, end or wall then type = 'normal'
                     else:
@@ -123,8 +129,8 @@ class Map:
 
         # If map was valid, we should now have 1 goal node and 1 start node.
         # Now we must set the tentative cost for start node. (g+f)
-        if len(algorithm.openList) > 0:
-            algorithm.openList[0].f = self.manhattan_distance(algorithm.openList[0])
+        if len(self.algorithm.openList) > 0:
+            self.algorithm.openList[0].f = self.manhattan_distance(self.algorithm.openList[0])
 
     # Calculates the manhattan distance, adding difference in x and y between current node and goal node
     def manhattan_distance(self, from_node):
@@ -216,7 +222,7 @@ def main():
 
     game_map.start_map(tmp_read_map)
     game_map.print_board()
-'''
+
     # If algorithm is set to A*
     if algoType == '0':
         current_node = None
@@ -229,7 +235,11 @@ def main():
             # Pick the best node
             current_node = game_map.algorithm.openList[0]
             # Make node state visited.
-            '''
+            current_node.isVisited = True
+
+            game_map.print_board()
+            break
+
 
 
 main()
