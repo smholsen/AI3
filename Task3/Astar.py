@@ -1,5 +1,4 @@
 # A* Using manhattan distance, not Euclidian. Because simpler :3
-import time
 
 
 class Node:
@@ -18,6 +17,7 @@ class Node:
         self.isWall = False
         self.isNormal = True
         self.isVisited = False
+        self.isClosed = False
 
         self.backTracked = False
 
@@ -43,6 +43,9 @@ class Node:
         if self.backTracked:
             return '+'
 
+        elif self.isClosed:
+            return 'x'
+
         elif self.isVisited:
             return 'o'
 
@@ -54,7 +57,6 @@ class Node:
 
         elif self.isWall:
             return '#'
-
         elif self.isNormal:
             return '.'
 
@@ -69,6 +71,7 @@ class Node:
             self.cost = 5
         else:
             self.cost = 1
+
 
 class Map:
 
@@ -102,7 +105,6 @@ class Map:
 
         self.algorithm = Astar()
         # Reset map
-        mapArray = []
 
         # Y-axis
         for y in range(len(rows)):
@@ -244,7 +246,6 @@ def main():
             # Check which neighbour is best choice.
             neighbouring_nodes = game_map.get_neighbours(current_node)
 
-
             for nbr in neighbouring_nodes:
                 if nbr not in game_map.algorithm.closedList:
                     # Check if visited node is goal node
@@ -254,11 +255,11 @@ def main():
                         # Stop loop
                         break
 
-                    # If it is a wall then fuck it
+                    # If it is a wall then skip it
                     if nbr.isWall:
                         continue
 
-
+                    # if neighbour already exists
                     if nbr in game_map.algorithm.openList:
                         new_g = current_node.g + nbr.cost
                         print('NEW G:', new_g)
@@ -267,7 +268,6 @@ def main():
                             if not nbr.isStart:
                                 nbr.previous_node = current_node
                         nbr.f = nbr.g + nbr.h
-
                     else:
                         nbr.g = current_node.g + nbr.cost
                         nbr.h = game_map.manhattan_distance(nbr)
@@ -276,8 +276,8 @@ def main():
                         nbr.f = nbr.g + nbr.h
                         game_map.algorithm.openList.append(nbr)
 
-
             game_map.algorithm.closedList.append(current_node)
+            current_node.isClosed = True
 
             game_map.print_board()
 
@@ -286,10 +286,4 @@ def main():
         game_map.print_board()
 
 
-
-
-
 main()
-
-
-
