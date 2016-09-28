@@ -182,9 +182,12 @@ class Map:
     def backtrack_from_goal(self):
         tmp = self.goal
         tmp.backTracked = True
+        total_cost = 0
         while tmp.previous_node:
+            total_cost += tmp.cost
             tmp = tmp.previous_node
             tmp.backTracked = True
+        print('TOTAL COST: ', total_cost)
 
 
 class AlgorithmTools:
@@ -229,26 +232,24 @@ def main():
             # If algorithm is A* then sort with (g+h = f)
             game_map.algorithm.sort_open_list()
         elif algoType == '1':
-            # If algorithm is BFS, then dont sort. Just Normal Qeue, first in first out (Pop(0))
-            continue
+            # If algorithm is BFS, then don't sort. Just Normal Qeue, first in first out (Pop(0))
+            pass
         elif algoType == '2':
             # If algorithm is Dijkstra, only sort with respects to G, not H
             game_map.algorithm.sort_open_list_dijkstra()
 
 
-        for a in game_map.algorithm.openList:
-            print(str(a.f) + '||', end="")
-        print()
-        # time.sleep(0.1)  # delays for 5 seconds
-
         # Pick the best node
         current_node = game_map.algorithm.openList[0]
-        for node in game_map.algorithm.openList:
-            if node.f == current_node.f:
-                if node.h < current_node.h:
-                    current_node = node
-            else:
-                break
+        if algoType == '0':
+            for node in game_map.algorithm.openList:
+                if node.f == current_node.f:
+                    if node.h < current_node.h:
+                        current_node = node
+                else:
+                    break
+
+
 
         game_map.algorithm.openList.pop(game_map.algorithm.openList.index(current_node))
 
